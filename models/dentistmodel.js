@@ -3,7 +3,7 @@ import pool from "../config/db";
 
 
 //create a new doctor record
-export const createDentist=async(id,specialization,clinic_name,clinic_address)=>{
+export const createDentist=async(userId,specialization,clinic_name,clinic_address)=>{
     const result=await pool.query("INSERT INTO dentist(user_id,specialization,clinic_name,clinic_address) VALUES($1,$2,$3,$4) RETURNING *", 
         [id,specialization,clinic_name,clinic_address ]
     );
