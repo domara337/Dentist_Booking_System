@@ -41,6 +41,30 @@ export const getUsers=async(req,res)=>{
     }
 }
 
+//find user by email 
+export const getUserbyEmail=async(req,res)=>{
+
+    try{
+
+        const get_email=req.body.email;
+
+        const user=await findUserbyEmail(get_email)
+
+        if(!user) return res.status(404).json({message:'Could not find the user'})
+
+         res.status(200).json({message:"user retrieved successfully"  , user});
+
+
+    }
+    catch(err){
+        res.status(501).json({message:'internal server error' , 
+            error:err.message
+        })
+    }
+}
+
+
+
 export const updateMe = async (req, res) => {
     try {
         const userId = req.user.userId;
