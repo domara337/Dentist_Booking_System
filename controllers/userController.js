@@ -24,7 +24,7 @@ export const getMe=async(req,res)=>{
 }
 
 //get all users
-export const getAllUsers=async(req,res)=>{
+export const getUsers=async(req,res)=>{
     try{
 
         //db query to get all the users 
@@ -83,4 +83,68 @@ export const updateMe = async (req, res) => {
     }
 };
 
+//delete-user
+export const deleteMe=async(req,res)=>{
+  
+    try{
 
+  //get user id from the req.user
+        const getId=req.user.userId;
+
+        //delete user from the db
+        const DelUser=await DeleteUser(getId);
+
+        //send confirmation message
+        if(DelUser){
+            return res.status(200).json({message:"Deleting user operation successful"})
+
+        }
+
+
+    }
+    catch(err){
+    
+    res.status(501).json({
+        message: 'Internal server error', 
+        error:err.message
+    })
+
+    }
+}
+
+
+//get user by id(admin-use)
+export const findUserbyId=async(req,res)=>{
+
+try{
+
+    const userId=req.params.id;
+
+    const user=await getUserById(userId);
+
+    if(!user){
+        return res.status(404).json({message: 'User not found'});
+    }
+
+    //confirmation message
+    return res.status(200).json({user})
+
+
+
+}
+catch(err){
+    res.status(500).json({
+        message:'Internal server error', 
+        error:err.message
+    })
+}
+
+
+
+}
+
+
+
+
+
+//delete user by id(admin-use)
