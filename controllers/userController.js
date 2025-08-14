@@ -148,3 +148,28 @@ catch(err){
 
 
 //delete user by id(admin-use)
+export const delUserbyId=async(req,res)=>{
+    try{
+
+        const getId=req.params.id;
+
+        //query to delete the user 
+        const deletedUser=await DeleteUser(getId);
+
+
+        if(!deletedUser){
+            return res.status(404).json({message:"operation failec"})
+        }
+
+        return res.status(200).json({message:"User deleted successfully"})
+
+
+
+    }
+    catch(err){
+        res.status(501).json({
+            message:'Internal server error', 
+            error:err.message
+        })
+    }
+}
