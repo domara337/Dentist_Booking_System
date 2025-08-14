@@ -41,28 +41,59 @@ export const getUsers=async(req,res)=>{
     }
 }
 
-//find user by email 
-export const getUserbyEmail=async(req,res)=>{
+// Find user by email
+export const getUserByEmail = async (req, res) => {
+    try {
+        const get_email = req.body.email;
+        if (!get_email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
 
-    try{
+        const user = await findUserbyEmail(get_email);
 
-        const get_email=req.body.email;
+        if (!user) {
+            return res.status(404).json({ message: 'Could not find the user' });
+        }
 
-        const user=await findUserbyEmail(get_email)
+        res.status(200).json({
+            message: "User retrieved successfully",
+            user
+        });
 
-        if(!user) return res.status(404).json({message:'Could not find the user'})
-
-         res.status(200).json({message:"user retrieved successfully"  , user});
-
-
+    } catch (err) {
+        res.status(500).json({
+            message: 'Internal server error',
+            error: err.message
+        });
     }
-    catch(err){
-        res.status(501).json({message:'internal server error' , 
-            error:err.message
-        })
-    }
-}
+};
 
+// Find user by phone
+export const getUserByPhone = async (req, res) => {
+    try {
+        const get_phone = req.body.phone;
+        if (!get_phone) {
+            return res.status(400).json({ message: 'Phone is required' });
+        }
+
+        const user = await findUserByPhone(get_phone);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Could not find the user' });
+        }
+
+        res.status(200).json({
+            message: 'User retrieved successfully',
+            user
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: 'Internal server error',
+            error: err.message
+        });
+    }
+};
 
 
 export const updateMe = async (req, res) => {
