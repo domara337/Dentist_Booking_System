@@ -138,7 +138,7 @@ export const create_user=async(req,res)=>{
             user_phone
         }=req.body;
 
-        const userCreated=CreateUser(user_name,user_email,password,user_role,user_phone);
+        const userCreated=await CreateUser(user_name,user_email,password,user_role,user_phone);
 
         if(!userCreated) return res.status(404).json({message:'user not created'})
 
@@ -146,7 +146,7 @@ export const create_user=async(req,res)=>{
         res.status(200).json({message:'user is created successfully', userCreated})
 
 
-        
+
 
 
 
@@ -167,7 +167,7 @@ export const create_user=async(req,res)=>{
 export const updateMe = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const allowedUpdates = ['name', 'email', 'password', 'phone'];
+        const allowedUpdates = ['user_name', 'user_email', 'password', 'user_phone'];
         const updates = Object.keys(req.body);
 
         //check for valid fields 
@@ -219,11 +219,17 @@ export const deleteMe=async(req,res)=>{
         //delete user from the db
         const DelUser=await DeleteUser(getId);
 
+
+        if (!DelUser) {
+    return res.status(404).json({ message: "User not found or could not be deleted" });
+}
+
+
         //send confirmation message
-        if(DelUser){
+        
             return res.status(200).json({message:"Deleting user operation successful"})
 
-        }
+    
 
 
     }
