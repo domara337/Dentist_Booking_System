@@ -46,11 +46,11 @@ export const login=async(req,res)=>{
 
     try{
 
-        const user=findUserbyEmail(email);
+        const user=await findUserbyEmail(email);
 
         if(!user) return res.status(401).json({message:'Invalid user'});
 
-        const match=await bcrypt.compare(password,user.hashed_password);
+        const match=await bcrypt.compare(password,user.password);
 
 
         if(!match) return res.status(401).json({message: 'Invalid credentials'})
