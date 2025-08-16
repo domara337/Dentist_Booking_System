@@ -96,6 +96,74 @@ export const getUserByPhone = async (req, res) => {
 };
 
 
+
+//get user by id(admin-use)
+export const findUserbyId=async(req,res)=>{
+
+try{
+
+    const userId=req.params.id;
+
+    const user=await getUserById(userId);
+
+    if(!user){
+        return res.status(404).json({message: 'User not found'});
+    }
+
+    //confirmation message
+    return res.status(200).json({user})
+
+
+
+}
+catch(err){
+    res.status(500).json({
+        message:'Internal server error', 
+        error:err.message
+    })
+}
+
+
+
+}
+
+//create user function 
+export const create_user=async(req,res)=>{
+    try{
+        //define the body variables
+        const {user_name,
+            user_email, 
+            password,
+            user_role,
+            user_phone
+        }=req.body;
+
+        const userCreated=CreateUser(user_name,user_email,password,user_role,user_phone);
+
+        if(!userCreated) return res.status(404).json({message:'user not created'})
+
+
+        res.status(200).json({message:'user is created successfully', userCreated})
+
+
+        
+
+
+
+
+    
+
+
+    }
+    catch(err){
+        res.status(501).json({
+            message: 'Internal server error', 
+            error:err.message
+
+        })
+    }
+}
+
 export const updateMe = async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -138,6 +206,8 @@ export const updateMe = async (req, res) => {
     }
 };
 
+
+
 //delete-user
 export const deleteMe=async(req,res)=>{
   
@@ -166,41 +236,6 @@ export const deleteMe=async(req,res)=>{
 
     }
 }
-
-
-//get user by id(admin-use)
-export const findUserbyId=async(req,res)=>{
-
-try{
-
-    const userId=req.params.id;
-
-    const user=await getUserById(userId);
-
-    if(!user){
-        return res.status(404).json({message: 'User not found'});
-    }
-
-    //confirmation message
-    return res.status(200).json({user})
-
-
-
-}
-catch(err){
-    res.status(500).json({
-        message:'Internal server error', 
-        error:err.message
-    })
-}
-
-
-
-}
-
-
-
-
 
 //delete user by id(admin-use)
 export const delUserbyId=async(req,res)=>{
