@@ -125,3 +125,49 @@ export const update_Dentist = async (req, res) => {
     });
   }
 };
+
+
+
+//delete dentist
+export const delete_dentist=async(req,res)=>{
+    try{
+
+        //get dentist_Id 
+        const dentId=req.params.id;
+        const userId=req.user.userId;
+        const userRole=req.user.role;
+
+
+
+        //check if dentist exists 
+        const dentist=await getDentistById(dentId);
+
+        if(!dentist){
+            return res.status(404).json({message:"Dentist not found"});
+        }
+
+
+        
+    // 2. Check permissions: admin OR owner of the profile
+    if (userRole !== "admin" && dentist.rows[0].user_id !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this profile" });
+    }
+
+    //db query to delete the dentist by the id
+    await deleteDentist(dentId);
+
+
+
+    //return success
+    res.status(200).json({message:"Dentist profile deleted successfully"});
+
+
+
+
+    }
+    catch(err){
+        res.status(501).json({
+            error:err.message,
+            message:"Internal server error"})
+    }
+}
