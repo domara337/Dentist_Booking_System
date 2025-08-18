@@ -7,7 +7,7 @@ import { createAvailablity,getAvailablityByDentist,updateAvailablity,deleteAvail
 
 
 //create availabilityslot
-export const createAvailability=async(req,res)=>{
+export const create_Availability=async(req,res)=>{
 
 try{
 
@@ -23,7 +23,7 @@ try{
 
 
     ///insert new availability in db
-    const NewAvailability=await createAvailability(dentId,day_of_week,start_time,end_time);
+    const NewAvailability=await createAvailablity(dentId,day_of_week,start_time,end_time);
 
     if(NewAvailability) return res.status(201).json({
         message:"availability slot was created successfully",
@@ -38,7 +38,7 @@ try{
 
 }
 catch(err){
-    res.status(501).json({
+    res.status(500).json({
         error:err.message,
         message:"Internal server error"
     })
@@ -48,24 +48,7 @@ catch(err){
 
 
 
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
 
 //get availablity by the dentist id
 export const getAvailability=async(req,res)=>{
@@ -95,9 +78,58 @@ export const getAvailability=async(req,res)=>{
     }
     catch(err){
         res.status(501).json({
-
+            message:'Internal server error', 
+            error:err.message
         })
     }
 }
 
 
+//update dentist
+export const update_availability=async(req,res)=>{
+    try{
+        //get availability id from the req.params
+        const availabilityId=req.params.id;
+        const allowedUpdates=['day_of_week','start_time','end_time'];
+        const updates=Object.keys(req.body);
+
+
+
+        //check for invalid fields
+        const isValid=updates.every(field=>allowedUpdates.includes(field));
+
+        if(!isValid){
+            return res.status(404).json({message:'Invalid fields in updates'})
+        }
+
+
+        //udpate the availability
+        const updatedAvailability=await updateAvailablity(availabilityId,updates);
+
+
+        if(!updatedAvailability){
+            return res.status(404).json({message:"Availability not updated"})
+
+
+        }
+
+        //return successful message
+        res.status(200).json({
+            message:'Availability updated successfully', 
+            availability:updatedAvailability
+        })
+
+
+
+
+
+
+
+
+    }
+    catch(err){
+        res.status(500).json({error:err.message, 
+            message:"Internal server error"
+        })
+    }
+}
