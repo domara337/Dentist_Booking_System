@@ -61,6 +61,32 @@ export const get_All_dentists=async(req,res)=>{
     }
 }
 
+
+//get dentist by id
+export const get_dentist_byId=async(req,res)=>{
+    try{
+     const dentId=req.params.id;
+
+     const dentist=await getDentistById(dentId);
+
+     if(!dentist) return res.status(404).json({message:"dentist was not found"});
+
+     res.status(201).json({
+        message:"dentist was retrieved successfully", 
+        dentist
+     })
+
+
+
+
+
+    }
+    catch(err){
+        res.status(501).json({message:"Internal server error", 
+            error:err.message
+        })
+    }
+}
 //update dentist profile
 export const update_Dentist = async (req, res) => {
   try {
