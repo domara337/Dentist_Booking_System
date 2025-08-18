@@ -3,9 +3,9 @@ import pool from "../config/db";
 
 
 //create a new doctor record
-export const createDentist=async(userId,specialization,clinic_name,clinic_address)=>{
+export const createDentist=async(userid,specialization,clinic_name,clinic_address)=>{
     const result=await pool.query("INSERT INTO dentist(user_id,specialization,clinic_name,clinic_address) VALUES($1,$2,$3,$4) RETURNING *", 
-        [id,specialization,clinic_name,clinic_address ]
+        [userid,specialization,clinic_name,clinic_address ]
     );
 
     return result.rows[0];
@@ -40,7 +40,7 @@ export const updateDentist=async(id,updates)=>{
 
     if(fields.length==0) throw new Error("No updates provided")
 
-    const setClause=fields.map((field,index) => `{$field}=$${index+1}`)
+    const setClause=fields.map((field,index) => `${field}=$${index+1}`)
     .join(', ')
 
     //write the query

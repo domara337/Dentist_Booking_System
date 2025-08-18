@@ -60,3 +60,42 @@ export const get_All_dentists=async(req,res)=>{
 
     }
 }
+
+//update dentist profile
+export const update_Dentist = async (req, res) => {
+  try {
+    const dentId = req.params.id;
+    const allowedUpdates = ["specialization", "clinic_name", "clinic_address"];
+    const updates = Object.keys(req.body);
+
+    // check if all requested updates are allowed
+    const isValid = updates.every(field => allowedUpdates.includes(field));
+    if (!isValid) {
+      return res.status(400).json({ message: "Invalid fields in update." });
+    }
+
+    // find dentist
+    const dentist = await getDentistById(dentId);
+    if (!dentist) {
+      return res.status(404).json({ message: "Dentist not found." });
+    }
+
+    // apply updates
+    updates.forEach(field => {
+      dentist[field] = req.body[field];
+    });
+
+    // save updated record
+     const updatedDentist=await updateDentist(dentId,updates);
+
+    res.status(200).json({
+      message: "Dentist updated successfully.",
+      dentist:updatedDentist,
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+      message: "Internal server error",
+    });
+  }
+};
