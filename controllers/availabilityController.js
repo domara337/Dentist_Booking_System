@@ -133,3 +133,57 @@ export const update_availability=async(req,res)=>{
         })
     }
 }
+
+
+//delete availability function 
+export const delete_availability=async(req,res)=>{
+
+try{
+
+    //get the availability id from req.params
+    const availabilityId=req.params.id;
+
+
+    //use the db query to delete the availability 
+    const DeletedAvailability=await deleteAvailablity(availabilityId);
+
+
+
+    //check if the operation is successful
+    if(!deleteAvailablity){
+        res.status(404).json({message: "Deletion operation failed"})
+    }
+
+
+    res.status(200).json({message:"availability deleted successfuly"})
+
+
+
+}
+catch(err){
+
+res.status(500).json({
+    error: err.message, 
+    message: "Internal server error"
+})
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
