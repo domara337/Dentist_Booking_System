@@ -1,0 +1,20 @@
+import express from "express";
+import { create_Dentist,get_All_dentists,get_dentist_byId,update_Dentist,delete_dentist } from "../controllers/dentistController";
+import authMiddleware from "../middleware/authMiddleware";
+
+
+
+const router=express.Router();
+
+
+//routes
+router.post('/',create_Dentist)
+router.get('/',get_All_dentists);
+router.get('/:id',get_dentist_byId);
+router.put('/update',update_Dentist);
+router.delete('/delete',delete_dentist)
+
+
+
+
+export default router;
