@@ -12,7 +12,7 @@ router.post('/',create_Dentist)
 router.get('/',get_All_dentists);
 router.get('/:id',get_dentist_byId);
 router.put('/update',update_Dentist);
-router.delete('/delete',delete_dentist)
+router.delete('/delete',delete_dentist,authMiddleware)
 
 
 

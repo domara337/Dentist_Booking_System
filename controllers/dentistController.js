@@ -3,7 +3,7 @@ import { createDentist,getDentistById,getAllDentist,updateDentist,deleteDentist 
 
 
 //create a new dentist
-export const createDentist=async(req,res)=>{
+export const create_Dentist=async(req,res)=>{
     try{
         const userid=req.user.userId;
 
