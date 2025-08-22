@@ -1,194 +1,185 @@
 import pool from "../config/db";
-import { createAppointment,getAppointmentsByuser,getAppointmentsBydate,getAllApointments,
-    getAppointmentByDentist,updateAppointment,
-    deleteAppointment
- } from "../models/appointmentsmodel";
-
-
-
- //create appointment 
- export const create_Appointment=async(req,res)=>{
-
-    try{
-        //get the id's from the req.params
-         const {patientId,dentistId}=req.params;
-
-        //get the values from the req.body
-        const {date,status}=req.body;
-
-
-        //db query to insert & create an appointment
-        const appointment=await createAppointment(patientId,dentistId,date,status);
-
-
-
-        if(!appointment) return res.status(400).json({message:"New appointment was not created"});
-
-
-        res.status(201).json({message:"Appointment was created successfully" , 
-            appointment:appointment
-        })
-
-
-    }
-
-
-    catch(err){
-
-
-        res.status(500).json({message:"Internal server error", 
-            error:err.message
-        })
-
-
-
-    }
+import {
+  createAppointment,
+  getAppointmentById,
+  getAllAppointments,
+  getAppointmentsByPatient,
+  getAppointmentsByDentist,
+  getAppointmentsByDate,
+  updateAppointment,
+  deleteAppointment
+} from "../models/appointmentsmodel";
 
 
 
 
- }
 
- //get all appointments
- export const get_all_appointments=async(req,res)=>{
 
+
+//create appointment
+export const create_Appointment = async (req, res) => {
   try {
-    const query = `
-      SELECT 
-        a.id AS appointment_id,
-        a.date,
-        a.status,
-        p.id AS patient_id,
-        p.name AS patient_name,
-        p.email AS patient_email,
-        d.id AS dentist_id,
-        d.name AS dentist_name,
-        d.specialty AS dentist_specialty
-      FROM appointments a
-      JOIN patients p ON a.patient_id = p.id
-      JOIN dentists d ON a.dentist_id = d.id
-    `;
+    const { patientId, dentistId } = req.params;
+    const { date, status } = req.body;
 
-    const appointments = await db.query(query);
+    const appointment = await createAppointment(patientId, dentistId, date, status);
 
-    res.status(200).json({ appointments: appointments.rows });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching appointments" });
+    if (!appointment) {
+      return res.status(400).json({ message: "New appointment was not created" });
+    }
+
+    res.status(201).json({
+      message: "Appointment created successfully",
+      appointment
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
   }
-
-
-
- }
-
-
-
- //get appointment by Id function 
- export const get_appointment_byId=async(req,res)=>{
-
-try{
-
-//get the id from the req.params
-const {id}=req.params.id;
-
-
-//query appointment from database
-const query=`
-SELECT 
-a.id AS appointment_id,
-a.date,
-a.status,
-p.id AS patient_id,
-p.name AS patient_name,
-p.email AS patient_email,
-d.id AS dentist_id,
-d.name AS dentist_name,
-d.speciality AS dentist_speciality,
-
-FROM appointments a
- JOIN patients p ON a.patient_id = p.id
-      JOIN dentists d ON a.dentist_id = d.id
-      WHERE a.id = $1
-    `;
-
-const {rows}=await pool.query(query,[id])
-
-if(rows.length===0){
-    return res.status(404).json({messasge:"Appointment not found"})
-}
-
-return res.status(200).json(rows[0])
-
-
-
-}
-catch(err){
-
-    res.status(500).json({message:"Internal server error" , 
-        error:err.message
-    })
-
-
-}
+};
 
 
 
 
- }
 
 
 
- //Update appointment
- export const update_appointment=async(req,res)=>{
-    try{
-        //get appointment id from req.params
-        const {id}=req.params.id
-
-        const updates=req.body;
-
-        const updatedAppointment=await updateAppointment(id,updates);
-
-        if(!updateAppointment){
-            return res.status(404).json({message:"Appointment not found"});
-        }
-
-        res.status(200).json({updatedAppointment})
+//get all appointments
+export const get_all_appointments = async (req, res) => {
+  try {
+    const appointments = await getAllAppointments();
+    res.status(200).json({ appointments });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching appointments", error: err.message });
+  }
+};
 
 
+
+
+
+
+//get appointment by id
+export const get_appointment_byId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointment = await getAppointmentById(id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
     }
-    catch(err){
-        res.status(500).json({
-            message:"Internal server erorr", 
-            error:err.message
-        }
 
-        )
+    res.status(200).json(appointment);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+
+// Get Appointments By Patient
+export const get_appointments_byPatient = async (req, res) => {
+  try {
+    const { patientId } = req.params;
+    const appointments = await getAppointmentsByPatient(patientId);
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found for this patient" });
     }
- }
+
+    res.status(200).json({ appointments });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
 
 
 
- //delete appointment
- export const delete_appointemnt=async(req,res)=>{
-    try{
-
-        //get the appointment id 
-        const {id} =req.params.id;
-
-        //delete the appointment from the db
-        const deletedAppointment=await deleteAppointment(id);
-
-        if(!deletedAppointment) return res.status(404).json({message:"Deletion operation failed"});
 
 
-        res.status(200).json({message:"deletion operation successful"})
+// Get Appointments By Dentist
+export const get_appointments_byDentist = async (req, res) => {
+  try {
+    const { dentistId } = req.params;
+    const appointments = await getAppointmentsByDentist(dentistId);
 
-
-
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found for this dentist" });
     }
-    catch(err){
-        res.status(500).json({message:"Internal server erorr", 
-            error:err.message
-        })
- }
-}
+
+    res.status(200).json({ appointments });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+
+
+
+
+// Get Appointments By Date
+export const get_appointments_byDate = async (req, res) => {
+  try {
+    const { date } = req.params;
+    const appointments = await getAppointmentsByDate(date);
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found for this date" });
+    }
+
+    res.status(200).json({ appointments });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+// Update Appointment
+export const update_appointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const updatedAppointment = await updateAppointment(id, updates);
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.status(200).json({ updatedAppointment });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+// Delete Appointment
+
+export const delete_appointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedAppointment = await deleteAppointment(id);
+
+    if (!deletedAppointment) {
+      return res.status(404).json({ message: "Deletion failed or appointment not found" });
+    }
+
+    res.status(200).json({ message: "Appointment deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
