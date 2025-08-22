@@ -135,3 +135,33 @@ catch(err){
 
 
  }
+
+
+
+ //Update appointment
+ export const update_appointment=async(req,res)=>{
+    try{
+        //get appointment id from req.params
+        const {id}=req.params.id
+
+        const updates=req.body;
+
+        const updatedAppointment=await updateAppointment(id,updates);
+
+        if(!updateAppointment){
+            return res.status(404).json({message:"Appointment not found"});
+        }
+
+        res.status(200).json({updatedAppointment})
+
+
+    }
+    catch(err){
+        res.status(500).json({
+            message:"Internal server erorr", 
+            error:err.message
+        }
+
+        )
+    }
+ }
