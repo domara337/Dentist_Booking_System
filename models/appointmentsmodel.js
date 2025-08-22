@@ -11,7 +11,14 @@ export const createAppointment=async(patientId,dentistId,date,status)=>{
     return result.rows[0];
 }
 
-
+//get appointment by id
+export const getAppointmentById=async(app_id)=>{
+    const result=await pool.query(
+        "SELECT * FROM appointments WHERE id=$1", 
+        [app_id]
+    )
+    return result.rows[0];
+}
 
 //get appointment by user
 export const getAppointmentsByuser=async(patientId)=>{
