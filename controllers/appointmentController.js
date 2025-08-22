@@ -47,3 +47,34 @@ import { createAppointment,getAppointmentsByuser,getAppointmentsBydate,getAllApo
 
 
  }
+
+ //get all appointments
+ export const get_all_appointments=async(req,res)=>{
+
+  try {
+    const query = `
+      SELECT 
+        a.id AS appointment_id,
+        a.date,
+        p.id AS patient_id,
+        p.name AS patient_name,
+        p.email AS patient_email,
+        d.id AS dentist_id,
+        d.name AS dentist_name,
+        d.specialty AS dentist_specialty
+      FROM appointments a
+      JOIN patients p ON a.patient_id = p.id
+      JOIN dentists d ON a.dentist_id = d.id
+    `;
+
+    const appointments = await db.query(query);
+
+    res.status(200).json({ appointments: appointments.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching appointments" });
+  }
+
+
+
+ }
