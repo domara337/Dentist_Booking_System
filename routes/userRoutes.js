@@ -8,15 +8,15 @@ const router=express.Router();
 
 
 
-router.get('/', getMe);
-router.put('/update', updateMe);
+router.get('/me', getMe);
+router.put('/update',authMiddleware, updateMe);
 router.delete('/delete',authMiddleware,deleteMe);
-router.delete('delete/:id',authMiddleware,delUserbyId);
-router.get('/getall',getUsers);
-router.get('/getuseremail',getUserByEmail);
-router.get('/getuserphone',getUserByPhone);
+router.delete('/delete/:id',authMiddleware,delUserbyId);
+router.get('/getall',authMiddleware,getUsers);
+router.get('/by-email',getUserByEmail);
+router.get('/by-phone',getUserByPhone);
 router.get('/:id',findUserbyId);
-router.post('/create-user',create_user);
+router.post('/register',create_user);
 
 
 
