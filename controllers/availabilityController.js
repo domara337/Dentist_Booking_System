@@ -54,7 +54,7 @@ catch(err){
 export const getAvailability=async(req,res)=>{
     try{
         //get the dentist id 
-        const dentId=req.params.id;
+        const {id}=req.params.id;
 
         //query db for all availablity slots where dentId=dentistId
         const Availablity=await getAvailablityByDentist(dentId);

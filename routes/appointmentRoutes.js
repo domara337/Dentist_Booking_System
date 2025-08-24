@@ -17,3 +17,6 @@ router.get("/:patientId",get_appointments_byPatientId)
 router.get("/:dentistId",get_appointments_byDentist)
 router.put("/",update_appointment);
 router.delete("/delete",delete_appointment);
+
+
+export default router;
