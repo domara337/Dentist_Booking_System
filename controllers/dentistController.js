@@ -90,7 +90,7 @@ export const get_dentist_byId=async(req,res)=>{
 //update dentist profile
 export const update_Dentist = async (req, res) => {
   try {
-    const dentId = req.params.id;
+    const {id} = req.params.id;
     const allowedUpdates = ["specialization", "clinic_name", "clinic_address"];
     const updates = Object.keys(req.body);
 
@@ -112,7 +112,7 @@ export const update_Dentist = async (req, res) => {
     });
 
     // save updated record
-     const updatedDentist=await updateDentist(dentId,updates);
+     const updatedDentist=await updateDentist(id,updates);
 
     res.status(200).json({
       message: "Dentist updated successfully.",
@@ -133,7 +133,7 @@ export const delete_dentist=async(req,res)=>{
     try{
 
         //get dentist_Id 
-        const dentId=req.params.id;
+        const {id}=req.params.id;
         const userId=req.user.userId;
         const userRole=req.user.role;
 
@@ -154,7 +154,7 @@ export const delete_dentist=async(req,res)=>{
     }
 
     //db query to delete the dentist by the id
-    await deleteDentist(dentId);
+    await deleteDentist(id);
 
 
 

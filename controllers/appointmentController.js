@@ -77,7 +77,7 @@ export const get_appointment_byId = async (req, res) => {
 
 
 // Get Appointments By Patient
-export const get_appointments_byPatient = async (req, res) => {
+export const get_appointments_byPatientId = async (req, res) => {
   try {
     const { patientId } = req.params;
     const appointments = await getAppointmentsByPatient(patientId);
