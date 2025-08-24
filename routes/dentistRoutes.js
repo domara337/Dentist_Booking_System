@@ -1,6 +1,6 @@
 import express from "express";
-import { create_Dentist,get_All_dentists,get_dentist_byId,update_Dentist,delete_dentist } from "../controllers/dentistController";
-import authMiddleware from "../middleware/authMiddleware";
+import { create_Dentist,get_All_dentists,get_dentist_byId,update_Dentist,delete_dentist } from "../controllers/dentistController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 
 

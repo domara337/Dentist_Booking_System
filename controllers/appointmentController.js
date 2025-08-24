@@ -8,7 +8,7 @@ import {
   getAppointmentsByDate,
   updateAppointment,
   deleteAppointment
-} from "../models/appointmentsmodel";
+} from "../models/appointmentsmodel.js";
 
 
 

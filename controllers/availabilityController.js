@@ -1,4 +1,4 @@
-import { createAvailablity,getAvailablityByDentist,updateAvailablity,deleteAvailablity } from "../models/availabilitymodel";
+import { createAvailablity,getAvailablityByDentist,updateAvailablity,deleteAvailablity } from "../models/availabilitymodel.js";
 
 
 
@@ -12,7 +12,7 @@ export const create_Availability=async(req,res)=>{
 try{
 
     //get dentist id from the req.params
-    const dentId=req.params.id;
+    const {id}=req.params.id;
 
     //get the variables from the req.body
     const{
@@ -23,7 +23,7 @@ try{
 
 
     ///insert new availability in db
-    const NewAvailability=await createAvailablity(dentId,day_of_week,start_time,end_time);
+    const NewAvailability=await createAvailablity(id,day_of_week,start_time,end_time);
 
     if(NewAvailability) return res.status(201).json({
         message:"availability slot was created successfully",
@@ -57,7 +57,7 @@ export const getAvailability=async(req,res)=>{
         const {id}=req.params.id;
 
         //query db for all availablity slots where dentId=dentistId
-        const Availablity=await getAvailablityByDentist(dentId);
+        const Availablity=await getAvailablityByDentist(id);
 
         //return error if there are no availablities
 
@@ -89,7 +89,7 @@ export const getAvailability=async(req,res)=>{
 export const update_availability=async(req,res)=>{
     try{
         //get availability id from the req.params
-        const availabilityId=req.params.id;
+        const {id}=req.params.id;
         const allowedUpdates=['day_of_week','start_time','end_time'];
         const updates=Object.keys(req.body);
 
@@ -141,7 +141,7 @@ export const delete_availability=async(req,res)=>{
 try{
 
     //get the availability id from req.params
-    const availabilityId=req.params.id;
+    const {id}=req.params.id;
 
 
     //use the db query to delete the availability 

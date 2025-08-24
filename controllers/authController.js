@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { findUserbyEmail,CreateUser} from '../models/usermodel';
+import { findUserbyEmail,CreateUser} from '../models/usermodel.js';
 
 
 const saltedRounds=10;
@@ -9,7 +9,7 @@ const saltedRounds=10;
 //register
 export const register=async(req,res)=>{
 
-const {name,email,password}=req.body;
+const {name,email,password,role,phone}=req.body;
 
 
 try{
@@ -21,7 +21,7 @@ if(existing) return res.status(400).json({message: 'user already exists'});
 
 const hashed_password=await bcrypt.hash(password,saltedRounds);
 
-const newUser=await CreateUser(name,email,hashed_password);
+const newUser=await CreateUser(name,email,hashed_password,role,phone);
 
 
 res.status(201).json({id:newUser.id, email: newUser.email});

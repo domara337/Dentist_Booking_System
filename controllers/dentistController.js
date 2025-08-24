@@ -1,4 +1,4 @@
-import { createDentist,getDentistById,getAllDentist,updateDentist,deleteDentist } from "../models/dentistmodel";
+import { createDentist,getDentistById,getAllDentist,updateDentist,deleteDentist } from "../models/dentistmodel.js";
 
 
 
@@ -9,12 +9,12 @@ export const create_Dentist=async(req,res)=>{
 
         const {specialization,
             clinic_name,
-            clinic_address
-
+            clinic_address,
+          dentist_name
         }=req.body;
 
 
-        const newDentist=await createDentist(userid,specialization,clinic_name,clinic_address);
+        const newDentist=await createDentist(userid,specialization,clinic_name,clinic_address,dentist_name);
 
         if(!newDentist) return res.status(404).json({message:'User was not created'});
 
@@ -65,9 +65,9 @@ export const get_All_dentists=async(req,res)=>{
 //get dentist by id
 export const get_dentist_byId=async(req,res)=>{
     try{
-     const dentId=req.params.id;
+     const {id}=req.params;
 
-     const dentist=await getDentistById(dentId);
+     const dentist=await getDentistById(id);
 
      if(!dentist) return res.status(404).json({message:"dentist was not found"});
 
@@ -90,8 +90,8 @@ export const get_dentist_byId=async(req,res)=>{
 //update dentist profile
 export const update_Dentist = async (req, res) => {
   try {
-    const {id} = req.params.id;
-    const allowedUpdates = ["specialization", "clinic_name", "clinic_address"];
+    const {id} = req.params;
+    const allowedUpdates = ["specialization", "clinic_name", "clinic_address","dentist_name"];
     const updates = Object.keys(req.body);
 
     // check if all requested updates are allowed
@@ -101,7 +101,7 @@ export const update_Dentist = async (req, res) => {
     }
 
     // find dentist
-    const dentist = await getDentistById(dentId);
+    const dentist = await getDentistById(id);
     if (!dentist) {
       return res.status(404).json({ message: "Dentist not found." });
     }
@@ -112,7 +112,7 @@ export const update_Dentist = async (req, res) => {
     });
 
     // save updated record
-     const updatedDentist=await updateDentist(id,updates);
+     const updatedDentist=await updateDentist(id,req.body);
 
     res.status(200).json({
       message: "Dentist updated successfully.",
@@ -128,46 +128,35 @@ export const update_Dentist = async (req, res) => {
 
 
 
-//delete dentist
-export const delete_dentist=async(req,res)=>{
-    try{
+// delete dentist
+export const delete_dentist = async (req, res) => {
+  try {
+    // get dentist_Id
+    const { id } = req.params;
+    const userId = req.user.userId;
+    const userRole = req.user.role;
 
-        //get dentist_Id 
-        const {id}=req.params.id;
-        const userId=req.user.userId;
-        const userRole=req.user.role;
+    // check if dentist exists
+    const dentist = await getDentistById(id);
+    if (!dentist) {
+      return res.status(404).json({ message: "Dentist not found" });
+    }
 
-
-
-        //check if dentist exists 
-        const dentist=await getDentistById(dentId);
-
-        if(!dentist){
-            return res.status(404).json({message:"Dentist not found"});
-        }
-
-
-        
-    // 2. Check permissions: admin OR owner of the profile
-    if (userRole !== "admin" && dentist.rows[0].user_id !== userId) {
+    // check permissions: admin OR owner of the profile
+    if (userRole !== "admin" && dentist.user_id !== userId) {
       return res.status(403).json({ message: "Not authorized to delete this profile" });
     }
 
-    //db query to delete the dentist by the id
+    // db query to delete the dentist by the id
     await deleteDentist(id);
 
+    // return success
+    res.status(200).json({ message: "Dentist profile deleted successfully" });
 
-
-    //return success
-    res.status(200).json({message:"Dentist profile deleted successfully"});
-
-
-
-
-    }
-    catch(err){
-        res.status(501).json({
-            error:err.message,
-            message:"Internal server error"})
-    }
-}
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+      message: "Internal server error"
+    });
+  }
+};

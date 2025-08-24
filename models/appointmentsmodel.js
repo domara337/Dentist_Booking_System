@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 // Create appointment
 export const createAppointment = async (patientId, dentistId, date, status) => {

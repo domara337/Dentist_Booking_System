@@ -1,4 +1,4 @@
-import { findUserbyEmail, findUserByPhone, CreateUser, getAllUsers, DeleteUser, getUserById, updateUserById } from "../models/usermodel";
+import { findUserbyEmail, findUserByPhone, CreateUser, getAllUsers, DeleteUser, getUserById, updateUserbyId } from "../models/usermodel.js";
 import bcrypt from 'bcrypt';
 
 
@@ -167,7 +167,7 @@ export const create_user=async(req,res)=>{
 export const updateMe = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const allowedUpdates = ['user_name', 'user_email', 'password', 'user_phone'];
+        const allowedUpdates = ['name', 'email', 'role','password', 'phone'];
         const updates = Object.keys(req.body);
 
         //check for valid fields 
@@ -196,7 +196,7 @@ export const updateMe = async (req, res) => {
             updatedData.password = await bcrypt.hash(req.body.password, 10);
         }
 
-        const newUserData = await updateUserById(userId, updatedData);
+        const newUserData = await updateUserbyId(userId, updatedData);
 
         delete newUserData.password; // remove before sending
         res.status(200).json({ user: newUserData });

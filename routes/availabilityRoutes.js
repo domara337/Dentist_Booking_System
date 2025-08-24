@@ -1,7 +1,7 @@
 import express from "express";
 
-import { create_Availability,getAvailability,update_availability,delete_availability, } from "../controllers/availabilityController";
-import authMiddleware from "../middleware/authMiddleware";
+import { create_Availability,getAvailability,update_availability,delete_availability, } from "../controllers/availabilityController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 
 const router=express.Router();

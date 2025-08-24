@@ -1,11 +1,11 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 
 
 //create a new doctor record
-export const createDentist=async(userid,specialization,clinic_name,clinic_address)=>{
-    const result=await pool.query("INSERT INTO dentist(user_id,specialization,clinic_name,clinic_address) VALUES($1,$2,$3,$4) RETURNING *", 
-        [userid,specialization,clinic_name,clinic_address ]
+export const createDentist=async(userid,specialization,clinic_name,clinic_address,dentist_name)=>{
+    const result=await pool.query("INSERT INTO dentist(user_id,specialization,clinic_name,clinic_address,dentist_name) VALUES($1,$2,$3,$4,$5) RETURNING *", 
+        [userid,specialization,clinic_name,clinic_address,dentist_name]
     );
 
     return result.rows[0];
@@ -14,7 +14,7 @@ export const createDentist=async(userid,specialization,clinic_name,clinic_addres
 
 //get dentist by id
 export const getDentistById=async(id)=>{
-    const result=await pool.query("SELECT * FROM dentists WHERE id=$1",
+    const result=await pool.query("SELECT * FROM dentist WHERE id=$1",
         [id]
     )
     return result.rows[0];

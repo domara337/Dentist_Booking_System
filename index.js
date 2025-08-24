@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes.js";
 import dentistRoutes from "./routes/dentistRoutes.js";
 import availabilityRoutes from "./routes/availabilityRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import authRoutes from "./routes/authRoutes.js"
 
 // Load environment variables
 dotenv.config();
@@ -22,7 +23,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/dentists", dentistRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/appointments", appointmentRoutes);
-
+app.use("/api/authRoutes",authRoutes);
 // Health check route
 app.get("/", (req, res) => {
   res.send("API is running ✅");
